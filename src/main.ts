@@ -60,6 +60,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://hunting-backend.duckdns.org',
       'https://hunting-backend.duckdns.org',
+      'https://innova-talentum.netlify.app', //front
     ],
     credentials: true,
   });

@@ -1,0 +1,39 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta cuando haces push a main
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ~/hunting-backend
+            echo "📥 Pulling latest changes from GitHub..."
+            git pull origin main
+            
+            echo "📦 Installing dependencies..."
+            pnpm install
+            
+            echo "🔨 Building project..."
+            pnpm run build
+            
+            echo "🔄 Restarting PM2..."
+            pm2 restart hunting-backend
+            
+            echo "✅ Deploy completed successfully!"
+            pm2 status
