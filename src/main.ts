@@ -54,7 +54,15 @@ async function bootstrap() {
   );
 
   // CORS
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://hunting-backend.duckdns.org',
+      'https://hunting-backend.duckdns.org',
+    ],
+    credentials: true,
+  });
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application running on: ${await app.getUrl()}`);
