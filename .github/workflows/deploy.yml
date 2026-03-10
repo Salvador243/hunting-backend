@@ -17,10 +17,10 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST_AWS }}
+          username: ${{ secrets.SSH_USER_AWS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_AWS }}
+          port: ${{ secrets.SSH_PORT_AWS }}
           script: |
             cd ~/hunting-backend
             echo "📥 Pulling latest changes from GitHub..."
