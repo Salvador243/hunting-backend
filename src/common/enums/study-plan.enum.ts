@@ -1,0 +1,5 @@
+export enum StudyPlan {
+  BIMESTRAL = 'BIMESTRAL',
+  CUATRIMESTRAL = 'CUATRIMESTRAL',
+  SEMESTRAL = 'SEMESTRAL',
+}

@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StudentProfile } from './entities/student-profile.entity';
 import { CreateStudentProfileDto } from './dto/create-student-profile.dto';
 import { UpdateStudentProfileDto } from './dto/update-student-profile.dto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class StudentsService {
@@ -75,6 +77,50 @@ export class StudentsService {
       throw new NotFoundException('Student profile not found');
     }
     profile.photo = photoUrl;
+    return this.studentProfileRepository.save(profile);
+  }
+
+  async uploadPortfolioFile(
+    userId: string,
+    file: Express.Multer.File,
+    fileType: 'studyProof' | 'degree' | 'certifications',
+  ): Promise<StudentProfile> {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+
+    const profile = await this.getProfile(userId);
+    if (!profile) {
+      throw new NotFoundException('Student profile not found');
+    }
+
+    const uploadPath = process.env.UPLOAD_PATH || './uploads';
+    const documentsDir = path.join(uploadPath, 'documents');
+
+    if (!fs.existsSync(documentsDir)) {
+      fs.mkdirSync(documentsDir, { recursive: true });
+    }
+
+    const timestamp = Date.now();
+    const filename = `${fileType}-${userId}-${timestamp}${path.extname(file.originalname)}`;
+    const filepath = path.join(documentsDir, filename);
+
+    fs.writeFileSync(filepath, file.buffer);
+
+    const fileUrl = `/uploads/documents/${filename}`;
+
+    switch (fileType) {
+      case 'studyProof':
+        profile.studyProofUrl = fileUrl;
+        break;
+      case 'degree':
+        profile.degreeUrl = fileUrl;
+        break;
+      case 'certifications':
+        profile.certificationsUrl = fileUrl;
+        break;
+    }
+
     return this.studentProfileRepository.save(profile);
   }
 }

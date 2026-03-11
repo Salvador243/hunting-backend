@@ -1,0 +1,5 @@
+export enum AcademicStatus {
+  ESTUDIANTE = 'ESTUDIANTE',
+  PASANTE = 'PASANTE',
+  RECIEN_EGRESADO = 'RECIEN_EGRESADO',
+}

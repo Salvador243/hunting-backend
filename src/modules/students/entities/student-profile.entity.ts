@@ -8,6 +8,12 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import {
+  StudyPlan,
+  AcademicStatus,
+  StudySchedule,
+  InsuranceType,
+} from '../../../common/enums';
 
 @Entity('student_profiles')
 export class StudentProfile {
@@ -34,6 +40,9 @@ export class StudentProfile {
   phone: string;
 
   @Column({ nullable: true })
+  country: string;
+
+  @Column({ nullable: true })
   state: string;
 
   @Column({ nullable: true })
@@ -54,8 +63,32 @@ export class StudentProfile {
   @Column({ nullable: true })
   career: string;
 
+  @Column({ type: 'enum', enum: StudyPlan, nullable: true })
+  studyPlan: StudyPlan;
+
+  @Column({ type: 'enum', enum: AcademicStatus, nullable: true })
+  academicStatus: AcademicStatus;
+
+  @Column({ type: 'enum', enum: StudySchedule, nullable: true })
+  studySchedule: StudySchedule;
+
   @Column({ nullable: true })
-  semester: number;
+  linkedinUrl: string;
+
+  @Column({ default: false })
+  hasMedicalInsurance: boolean;
+
+  @Column({ type: 'enum', enum: InsuranceType, nullable: true })
+  insuranceType: InsuranceType;
+
+  @Column({ nullable: true })
+  studyProofUrl: string;
+
+  @Column({ nullable: true })
+  degreeUrl: string;
+
+  @Column({ nullable: true })
+  certificationsUrl: string;
 
   @Column({ default: false })
   profileCompleted: boolean;

@@ -2,11 +2,15 @@ import {
   Controller,
   Get,
   Put,
+  Post,
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { StudentsService } from './students.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -60,5 +64,83 @@ export class StudentsController {
   @Roles(Role.ADMIN)
   async getStudentById(@Param('id') id: string) {
     return this.studentsService.getProfileById(id);
+  }
+
+  @Post('portfolio/study-proof')
+  @Roles(Role.STUDENT)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ 
+    summary: 'Subir comprobante de estudios',
+    description: 'Permite al estudiante subir su comprobante de estudios (PDF, imagen)',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadStudyProof(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.studentsService.uploadPortfolioFile(user.id, file, 'studyProof');
+  }
+
+  @Post('portfolio/degree')
+  @Roles(Role.STUDENT)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ 
+    summary: 'Subir título o certificado',
+    description: 'Permite al estudiante subir su título o certificado (PDF, imagen)',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadDegree(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.studentsService.uploadPortfolioFile(user.id, file, 'degree');
+  }
+
+  @Post('portfolio/certifications')
+  @Roles(Role.STUDENT)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ 
+    summary: 'Subir certificaciones',
+    description: 'Permite al estudiante subir sus certificaciones (PDF, imagen)',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadCertifications(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.studentsService.uploadPortfolioFile(user.id, file, 'certifications');
   }
 }

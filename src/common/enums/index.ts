@@ -3,3 +3,7 @@ export * from './vacancy-status.enum';
 export * from './application-status.enum';
 export * from './duration-type.enum';
 export * from './modality.enum';
+export * from './study-plan.enum';
+export * from './academic-status.enum';
+export * from './study-schedule.enum';
+export * from './insurance-type.enum';

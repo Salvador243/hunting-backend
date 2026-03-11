@@ -1,5 +1,11 @@
-import { IsString, IsOptional, IsInt, Min, Max } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsBoolean, IsUrl, ValidateIf } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  StudyPlan,
+  AcademicStatus,
+  StudySchedule,
+  InsuranceType,
+} from '../../../common/enums';
 
 export class CreateStudentProfileDto {
   @ApiPropertyOptional({
@@ -33,6 +39,14 @@ export class CreateStudentProfileDto {
   @IsOptional()
   @IsString()
   phone?: string;
+
+  @ApiPropertyOptional({
+    example: 'México',
+    description: 'País de residencia',
+  })
+  @IsOptional()
+  @IsString()
+  country?: string;
 
   @ApiPropertyOptional({
     example: 'Jalisco',
@@ -91,14 +105,79 @@ export class CreateStudentProfileDto {
   career?: string;
 
   @ApiPropertyOptional({
-    example: 8,
-    description: 'Semestre actual (1-12)',
-    minimum: 1,
-    maximum: 12,
+    example: 'SEMESTRAL',
+    description: 'Plan de estudio',
+    enum: StudyPlan,
   })
   @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Max(12)
-  semester?: number;
+  @IsEnum(StudyPlan)
+  studyPlan?: StudyPlan;
+
+  @ApiPropertyOptional({
+    example: 'ESTUDIANTE',
+    description: 'Status académico',
+    enum: AcademicStatus,
+  })
+  @IsOptional()
+  @IsEnum(AcademicStatus)
+  academicStatus?: AcademicStatus;
+
+  @ApiPropertyOptional({
+    example: 'MATUTINO',
+    description: 'Horario de estudio',
+    enum: StudySchedule,
+  })
+  @IsOptional()
+  @IsEnum(StudySchedule)
+  studySchedule?: StudySchedule;
+
+  @ApiPropertyOptional({
+    example: 'https://www.linkedin.com/in/juan-perez',
+    description: 'URL del perfil de LinkedIn',
+  })
+  @IsOptional()
+  @IsUrl()
+  linkedinUrl?: string;
+
+  @ApiPropertyOptional({
+    example: true,
+    description: '¿Cuenta con seguro médico?',
+  })
+  @IsOptional()
+  @IsBoolean()
+  hasMedicalInsurance?: boolean;
+
+  @ApiPropertyOptional({
+    example: 'SEGURO_FACULTATIVO_IMSS',
+    description: 'Tipo de seguro médico',
+    enum: InsuranceType,
+  })
+  @IsOptional()
+  @ValidateIf((o) => o.hasMedicalInsurance === true)
+  @IsEnum(InsuranceType)
+  insuranceType?: InsuranceType;
+
+  @ApiPropertyOptional({
+    example: '/uploads/documents/comprobante-estudios.pdf',
+    description: 'URL del comprobante de estudios',
+  })
+  @IsOptional()
+  @IsString()
+  studyProofUrl?: string;
+
+  @ApiPropertyOptional({
+    example: '/uploads/documents/titulo.pdf',
+    description: 'URL del título o certificado',
+  })
+  @IsOptional()
+  @IsString()
+  degreeUrl?: string;
+
+  @ApiPropertyOptional({
+    example: '/uploads/documents/certificaciones.pdf',
+    description: 'URL de certificaciones',
+  })
+  @IsOptional()
+  @IsString()
+  certificationsUrl?: string;
 }
