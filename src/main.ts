@@ -60,7 +60,7 @@ async function bootstrap() {
     'http://hunting-backend.duckdns.org',
     'https://hunting-backend.duckdns.org',
     'https://innova-talentum.netlify.app', //front
-    'https://innovahunting.org/',
+    'https://innovahunting.org',
   ];
   const corsOrigins = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim())
