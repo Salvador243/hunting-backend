@@ -54,14 +54,20 @@ async function bootstrap() {
   );
 
   // CORS
+  const defaultOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://hunting-backend.duckdns.org',
+    'https://hunting-backend.duckdns.org',
+    'https://innova-talentum.netlify.app', //front
+    'https://innovahunting.org/',
+  ];
+  const corsOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim())
+    : defaultOrigins;
+
   app.enableCors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://hunting-backend.duckdns.org',
-      'https://hunting-backend.duckdns.org',
-      'https://innova-talentum.netlify.app', //front
-    ],
+    origin: corsOrigins,
     credentials: true,
   });
 
